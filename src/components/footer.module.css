@@ -1,0 +1,32 @@
+.footer {
+  width: 100%;
+  padding: 1.5rem 1rem;
+  background-color: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-family);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-align: center;
+  margin-top: 18vh;
+}
+
+.link {
+  color: var(--text-main);
+  text-decoration: none;
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.link:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.copyright {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}

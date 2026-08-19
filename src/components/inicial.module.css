@@ -1,0 +1,119 @@
+.container {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.card {
+  background: transparent;
+  border-radius: var(--border-radius-lg);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  transition: background-color var(--transition-normal);
+}
+
+/* Timer */
+.timer {
+  font-size: 10rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+/* Form / Input */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.input {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--primary);
+  color: var(--text-main);
+  text-align: center;
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  padding-bottom: 0.25rem;
+  width: 100%;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.input:focus {
+  border-bottom-color: var(--border-focus);
+}
+
+/* Descrição e Ciclos */
+.description {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.description strong {
+  color: var(--text-main);
+}
+
+.cycles-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.cycles-list {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cycle-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+/* Botão */
+.btn-start {
+  background: var(--primary);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  width: 100%;
+  padding: 0.75rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  margin-top: 1rem;
+}
+
+.btn-start:hover {
+  background: var(--primary-hover);
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-icon {
+  display: block;
+}

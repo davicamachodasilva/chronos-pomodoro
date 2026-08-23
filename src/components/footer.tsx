@@ -1,4 +1,4 @@
-import styles from './footer.module.css';
+import styles from './Footer.module.css';
 
 export default function Footer() {
   return (
@@ -7,7 +7,7 @@ export default function Footer() {
         Entenda a técnica pomodoro 
       </a>
       <p className={styles.copyright}>
-        Chronos Pomodoro ® 2025 – Feito com 
+        Chronos Pomodoro ® 2026
       </p>
     </footer>
   );

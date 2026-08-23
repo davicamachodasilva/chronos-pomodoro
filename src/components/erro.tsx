@@ -1,4 +1,4 @@
-import styles from './erro.module.css';
+import styles from './Erro.module.css';
 
 export default function Erro() {
   return (

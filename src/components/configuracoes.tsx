@@ -1,14 +1,28 @@
-import { useState } from 'react';
-import styles from './Configuracoes.module.css';
+import { useState } from "react";
+import styles from "./Configuracoes.module.css";
 
-export default function Configuracoes() {
+export interface ConfiguracoesTempo {
+  foco: number;
+  descansoCurto: number;
+  descansoLongo: number;
+}
+
+interface ConfiguracoesProp {
+  onSalvar: (novasConfiguracoes: ConfiguracoesTempo) => void;
+}
+
+export default function Configuracoes({ onSalvar }: ConfiguracoesProp) {
   const [foco, setFoco] = useState(25);
   const [descansoCurto, setDescansoCurto] = useState(5);
   const [descansoLongo, setDescansoLongo] = useState(15);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Lógica para salvar as configurações
+    onSalvar({
+      foco,
+      descansoCurto,
+      descansoLongo,
+    });
   };
 
   return (
@@ -21,7 +35,7 @@ export default function Configuracoes() {
 
         <form onSubmit={handleSubmit} className={styles.form}>
           {/* Foco */}
-          <div className={styles['input-group']}>
+          <div className={styles["input-group"]}>
             <label htmlFor="foco" className={styles.label}>
               Foco (min):
             </label>
@@ -36,7 +50,7 @@ export default function Configuracoes() {
           </div>
 
           {/* Descanso curto */}
-          <div className={styles['input-group']}>
+          <div className={styles["input-group"]}>
             <label htmlFor="descansoCurto" className={styles.label}>
               Descanso curto (min):
             </label>
@@ -51,7 +65,7 @@ export default function Configuracoes() {
           </div>
 
           {/* Descanso longo */}
-          <div className={styles['input-group']}>
+          <div className={styles["input-group"]}>
             <label htmlFor="descansoLongo" className={styles.label}>
               Descanso longo (min):
             </label>
@@ -65,17 +79,17 @@ export default function Configuracoes() {
             />
           </div>
 
-          {/* Botão Salvar */}
+
           <button
             type="submit"
             aria-label="Salvar configurações"
-            className={styles['btn-save']}
+            className={styles["btn-save"]}
           >
             <svg
               viewBox="0 0 24 24"
               width="24"
               height="24"
-              className={styles['btn-icon']}
+              className={styles["btn-icon"]}
               fill="none"
               stroke="currentColor"
               strokeWidth="2"

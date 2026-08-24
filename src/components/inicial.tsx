@@ -1,18 +1,20 @@
-import { useState } from 'react';
-import styles from './Inicial.module.css';
+import { useState } from "react";
+import styles from "./Inicial.module.css";
+// import type { ConfiguracoesTempo } from "./Configuracoes";
+// import Configuracoes from "./Configuracoes";
 
 export default function Inicial() {
-  const [task, setTask] = useState('Estudar');
+  const [task, setTask] = useState("Estudar");
 
   const cycles = [
-    '#f59e0b',
-    '#10b981',
-    '#f59e0b',
-    '#10b981',
-    '#f59e0b',
-    '#10b981',
-    '#f59e0b',
-    '#0ea5e9',
+    "#f59e0b",
+    "#10b981",
+    "#f59e0b",
+    "#10b981",
+    "#f59e0b",
+    "#10b981",
+    "#f59e0b",
+    "#0ea5e9",
   ];
 
   return (
@@ -22,7 +24,7 @@ export default function Inicial() {
         <h1 className={styles.timer}>00:00</h1>
 
         {/* Input da Task */}
-        <div className={styles['input-group']}>
+        <div className={styles["input-group"]}>
           <label htmlFor="task" className={styles.label}>
             task:
           </label>
@@ -41,13 +43,13 @@ export default function Inicial() {
         </p>
 
         {/* Indicadores de Ciclo */}
-        <div className={styles['cycles-container']}>
+        <div className={styles["cycles-container"]}>
           <span className={styles.label}>Ciclos:</span>
-          <div className={styles['cycles-list']}>
+          <div className={styles["cycles-list"]}>
             {cycles.map((color, index) => (
               <span
                 key={index}
-                className={styles['cycle-dot']}
+                className={styles["cycle-dot"]}
                 style={{ backgroundColor: color }}
               />
             ))}
@@ -55,8 +57,17 @@ export default function Inicial() {
         </div>
 
         {/* Botão Start */}
-        <button type="button" aria-label="Iniciar" className={styles['btn-start']}>
-          <svg viewBox="0 0 24 24" width="24" height="24" className={styles['btn-icon']}>
+        <button
+          type="button"
+          aria-label="Iniciar"
+          className={styles["btn-start"]}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
+            className={styles["btn-icon"]}
+          >
             <circle
               cx="12"
               cy="12"
@@ -69,6 +80,7 @@ export default function Inicial() {
           </svg>
         </button>
       </div>
+
     </main>
   );
 }

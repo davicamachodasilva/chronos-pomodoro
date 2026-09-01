@@ -1,22 +1,35 @@
 import { useState } from "react";
 import "./App.css";
- import Configuracoes from './components/Configuracoes'
- import Erro from './components/Erro'
+import Configuracoes, {
+  type ConfiguracoesTempo,
+} from "./components/Configuracoes";
+import Erro from "./components/Erro";
 import Footer from "./components/Footer";
-import Heading, {type Tela} from "./components/Heading";
+import Heading, { type Tela } from "./components/Heading";
 import Historico from "./components/Historico";
- import Inicial from './components/Inicial'
+import Inicial from "./components/Inicial";
 
 function App() {
-  const [trocarCompo, setTrocarCompo] = useState<Tela>('Inicial');
+  const [trocarCompo, setTrocarCompo] = useState<Tela>("Inicial");
+
+  const [config, setConfig] = useState<ConfiguracoesTempo>({
+    foco: 25,
+    descansoCurto: 5,
+    descansoLongo: 15,
+  });
+
+const handleSalvarCofiguracoes = (novasConfig: ConfiguracoesTempo) =>{
+  setConfig(novasConfig)
+  setTrocarCompo("Inicial")
+}
 
   const mudarCompo = () => {
     switch (trocarCompo) {
-      case 'Inicial':
-        return <Inicial />;
-      case 'Configuracao':
-        return <Configuracoes />;
-      case 'Historico':
+      case "Inicial":
+        return <Inicial config={config}/>;
+      case "Configuracao":
+        return <Configuracoes onSalvar={handleSalvarCofiguracoes}/>;
+      case "Historico":
         return <Historico />;
       default:
         return <Erro />;
@@ -25,7 +38,7 @@ function App() {
 
   return (
     <>
-      <Heading  setTrocarCompo={setTrocarCompo} telaAtual={trocarCompo}/>
+      <Heading setTrocarCompo={setTrocarCompo} telaAtual={trocarCompo} />
       {mudarCompo()}
       {/* <Inicial/> */}
       {/* <Configuracoes/> */}

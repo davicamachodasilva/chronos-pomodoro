@@ -1,9 +1,13 @@
 import { useState } from "react";
 import styles from "./Inicial.module.css";
-// import type { ConfiguracoesTempo } from "./Configuracoes";
+import type { ConfiguracoesTempo } from "./Configuracoes";
 // import Configuracoes from "./Configuracoes";
 
-export default function Inicial() {
+interface InicialProps{
+  config:ConfiguracoesTempo
+}
+
+export default function Inicial({config}: InicialProps) {
   const [task, setTask] = useState("Estudar");
 
   const cycles = [
@@ -17,13 +21,11 @@ export default function Inicial() {
     "#0ea5e9",
   ];
 
-  return (
+return (
     <main className={styles.container}>
       <div className={styles.card}>
-        {/* Timer */}
-        <h1 className={styles.timer}>00:00</h1>
+        <h1 className={styles.timer}>{config.foco}:00</h1>
 
-        {/* Input da Task */}
         <div className={styles["input-group"]}>
           <label htmlFor="task" className={styles.label}>
             task:
@@ -37,12 +39,10 @@ export default function Inicial() {
           />
         </div>
 
-        {/* Texto do Ciclo */}
         <p className={styles.description}>
-          Nesse ciclo <strong>foque</strong> por <strong>25 min</strong>.
+          Nesse ciclo <strong>foque</strong> por <strong>{config.foco} min</strong>.
         </p>
 
-        {/* Indicadores de Ciclo */}
         <div className={styles["cycles-container"]}>
           <span className={styles.label}>Ciclos:</span>
           <div className={styles["cycles-list"]}>
@@ -56,7 +56,6 @@ export default function Inicial() {
           </div>
         </div>
 
-        {/* Botão Start */}
         <button
           type="button"
           aria-label="Iniciar"
@@ -80,7 +79,6 @@ export default function Inicial() {
           </svg>
         </button>
       </div>
-
     </main>
   );
 }

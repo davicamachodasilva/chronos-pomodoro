@@ -74,6 +74,7 @@
 
 .cycles-container {
   display: flex;
+  display: none;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;

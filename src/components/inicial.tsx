@@ -1,14 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./Inicial.module.css";
 import type { ConfiguracoesTempo } from "./Configuracoes";
-// import Configuracoes from "./Configuracoes";
 
-interface InicialProps{
-  config:ConfiguracoesTempo
+interface InicialProps {
+  config?: ConfiguracoesTempo;
 }
 
-export default function Inicial({config}: InicialProps) {
+export default function Inicial({ config }: InicialProps) {
   const [task, setTask] = useState("Estudar");
+  const [indiceCiclo, setIndiceCiclo] = useState(0);
+  const [ativo, setAtivo] = useState(false);
+
+  // Valores padrão de segurança
+  const foco = config?.foco ?? 25;
+  const descansoCurto = config?.descansoCurto ?? 5;
+  const descansoLongo = config?.descansoLongo ?? 15;
 
   const cycles = [
     "#f59e0b",
@@ -21,10 +27,55 @@ export default function Inicial({config}: InicialProps) {
     "#0ea5e9",
   ];
 
-return (
+  const ehFoco = indiceCiclo % 2 === 0;
+
+  // Função auxiliar para retornar os minutos de cada etapa do ciclo
+  const getDuracaoMinutos = (indice: number) => {
+    if (indice % 2 === 0) return foco;
+    if (indice === 7) return descansoLongo;
+    return descansoCurto;
+  };
+
+  // Estado inicial do tempo
+  const [tempoRestante, setTempoRestante] = useState(() => getDuracaoMinutos(0) * 60);
+
+  // Unico useEffect necessário: apenas para rodar a contagem regressiva
+  useEffect(() => {
+    if (!ativo) return;
+
+    const intervalo = setInterval(() => {
+      setTempoRestante((prev) => {
+        if (prev <= 1) {
+          // Quando chega a zero: avança o ciclo e reseta o tempo do próximo ciclo
+          setIndiceCiclo((cicloAtual) => {
+            const proximo = (cicloAtual + 1) % cycles.length;
+            setTempoRestante(getDuracaoMinutos(proximo) * 60);
+            return proximo;
+          });
+          setAtivo(false);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(intervalo);
+  }, [ativo, foco, descansoCurto, descansoLongo, cycles.length]);
+
+  const toggleTimer = () => {
+    setAtivo((prev) => !prev);
+  };
+
+  const formatarTempo = (segundosTotais: number) => {
+    const min = Math.floor(segundosTotais / 60);
+    const seg = segundosTotais % 60;
+    return `${String(min).padStart(2, "0")}:${String(seg).padStart(2, "0")}`;
+  };
+
+  return (
     <main className={styles.container}>
       <div className={styles.card}>
-        <h1 className={styles.timer}>{config.foco}:00</h1>
+        <h1 className={styles.timer}>{formatarTempo(tempoRestante)}</h1>
 
         <div className={styles["input-group"]}>
           <label htmlFor="task" className={styles.label}>
@@ -40,7 +91,8 @@ return (
         </div>
 
         <p className={styles.description}>
-          Nesse ciclo <strong>foque</strong> por <strong>{config.foco} min</strong>.
+          Nesse ciclo <strong>{ehFoco ? "foque" : "descanse"}</strong> por{" "}
+          <strong>{getDuracaoMinutos(indiceCiclo)} min</strong>.
         </p>
 
         <div className={styles["cycles-container"]}>
@@ -50,7 +102,12 @@ return (
               <span
                 key={index}
                 className={styles["cycle-dot"]}
-                style={{ backgroundColor: color }}
+                style={{
+                  backgroundColor: color,
+                  opacity: index === indiceCiclo ? 1 : 0.3,
+                  transform: index === indiceCiclo ? "scale(1.2)" : "scale(1)",
+                  transition: "all 0.2s ease",
+                }}
               />
             ))}
           </div>
@@ -58,25 +115,46 @@ return (
 
         <button
           type="button"
-          aria-label="Iniciar"
+          aria-label={ativo ? "Pausar" : "Iniciar"}
           className={styles["btn-start"]}
+          onClick={toggleTimer}
         >
-          <svg
-            viewBox="0 0 24 24"
-            width="24"
-            height="24"
-            className={styles["btn-icon"]}
-          >
-            <circle
-              cx="12"
-              cy="12"
-              r="10"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            />
-            <polygon points="10,8 16,12 10,16" fill="currentColor" />
-          </svg>
+          {ativo ? (
+            <svg
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              className={styles["btn-icon"]}
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              />
+              <rect x="9" y="8" width="2" height="8" fill="currentColor" />
+              <rect x="13" y="8" width="2" height="8" fill="currentColor" />
+            </svg>
+          ) : (
+            <svg
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              className={styles["btn-icon"]}
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              />
+              <polygon points="10,8 16,12 10,16" fill="currentColor" />
+            </svg>
+          )}
         </button>
       </div>
     </main>

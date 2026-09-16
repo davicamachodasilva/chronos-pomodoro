@@ -27,7 +27,11 @@ export default function Inicial({ config }: InicialProps) {
     "#0ea5e9",
   ];
 
-  const ehFoco = indiceCiclo % 2 === 0;
+const tocarAlarme = () => {
+  const audio = new Audio("/audios/among-us-role-reveal-sound.mp3");
+  audio.play().catch((err) => console.log("Erro ao reproduzir o som:", err));
+};
+
 
   // Função auxiliar para retornar os minutos de cada etapa do ciclo
   const getDuracaoMinutos = (indice: number) => {
@@ -36,8 +40,22 @@ export default function Inicial({ config }: InicialProps) {
     return descansoCurto;
   };
 
+  const getTextoCiclo = (indice: number) => {
+    if (indice === 7) return "faça um descanso longo";
+    if (indice % 2 === 0) return "foque";
+    return "descanse";
+  };
+
+  const mudarCiclo = (novoIndice: number) => {
+    setIndiceCiclo(novoIndice);
+    setTempoRestante(getDuracaoMinutos(novoIndice) * 60);
+    setAtivo(false);
+  };
+
   // Estado inicial do tempo
-  const [tempoRestante, setTempoRestante] = useState(() => getDuracaoMinutos(0) * 60);
+  const [tempoRestante, setTempoRestante] = useState(
+    () => getDuracaoMinutos(0) * 60,
+  );
 
   // Unico useEffect necessário: apenas para rodar a contagem regressiva
   useEffect(() => {
@@ -46,13 +64,9 @@ export default function Inicial({ config }: InicialProps) {
     const intervalo = setInterval(() => {
       setTempoRestante((prev) => {
         if (prev <= 1) {
-          // Quando chega a zero: avança o ciclo e reseta o tempo do próximo ciclo
-          setIndiceCiclo((cicloAtual) => {
-            const proximo = (cicloAtual + 1) % cycles.length;
-            setTempoRestante(getDuracaoMinutos(proximo) * 60);
-            return proximo;
-          });
-          setAtivo(false);
+          tocarAlarme()
+          const proximo = (indiceCiclo + 1) % cycles.length;
+          mudarCiclo(proximo);
           return 0;
         }
         return prev - 1;
@@ -60,7 +74,7 @@ export default function Inicial({ config }: InicialProps) {
     }, 1000);
 
     return () => clearInterval(intervalo);
-  }, [ativo, foco, descansoCurto, descansoLongo, cycles.length]);
+  }, [ativo, indiceCiclo, foco, descansoCurto, descansoLongo]);
 
   const toggleTimer = () => {
     setAtivo((prev) => !prev);
@@ -91,7 +105,7 @@ export default function Inicial({ config }: InicialProps) {
         </div>
 
         <p className={styles.description}>
-          Nesse ciclo <strong>{ehFoco ? "foque" : "descanse"}</strong> por{" "}
+          Nesse ciclo <strong>{getTextoCiclo(indiceCiclo)}</strong> por{" "}
           <strong>{getDuracaoMinutos(indiceCiclo)} min</strong>.
         </p>
 

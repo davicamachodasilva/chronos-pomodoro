@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import styles from "./Inicial.module.css";
 import type { ConfiguracoesTempo } from "./Configuracoes";
 
@@ -27,11 +27,10 @@ export default function Inicial({ config }: InicialProps) {
     "#0ea5e9",
   ];
 
-const tocarAlarme = () => {
-  const audio = new Audio("/audios/among-us-role-reveal-sound.mp3");
-  audio.play().catch((err) => console.log("Erro ao reproduzir o som:", err));
-};
-
+  const tocarAlarme = () => {
+    const audio = new Audio("/audios/among-us-role-reveal-sound.mp3");
+    audio.play().catch((err) => console.log("Erro ao reproduzir o som:", err));
+  };
 
   // Função auxiliar para retornar os minutos de cada etapa do ciclo
   const getDuracaoMinutos = (indice: number) => {
@@ -57,33 +56,57 @@ const tocarAlarme = () => {
     () => getDuracaoMinutos(0) * 60,
   );
 
-  // Unico useEffect necessário: apenas para rodar a contagem regressiva
-  useEffect(() => {
-    if (!ativo) return;
-
-    const intervalo = setInterval(() => {
-      setTempoRestante((prev) => {
-        if (prev <= 1) {
-          tocarAlarme()
-          const proximo = (indiceCiclo + 1) % cycles.length;
-          mudarCiclo(proximo);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(intervalo);
-  }, [ativo, indiceCiclo, foco, descansoCurto, descansoLongo]);
-
-  const toggleTimer = () => {
-    setAtivo((prev) => !prev);
-  };
+  const tempoFinalRef = useRef<number | null>(null);
 
   const formatarTempo = (segundosTotais: number) => {
     const min = Math.floor(segundosTotais / 60);
     const seg = segundosTotais % 60;
     return `${String(min).padStart(2, "0")}:${String(seg).padStart(2, "0")}`;
+  };
+
+  useEffect(() => {
+    const tempoFormatado = formatarTempo(tempoRestante);
+    const status = getTextoCiclo(indiceCiclo);
+
+    if (ativo) {
+      document.title = `${tempoFormatado} - ${status}`;
+    } else {
+      document.title = "Pomodoro Timer";
+    }
+  }, [tempoRestante, ativo, indiceCiclo]);
+
+  // Unico useEffect necessário: apenas para rodar a contagem regressiva
+  useEffect(() => {
+    if (!ativo) return;
+
+    const intervalo = setInterval(() => {
+      if (!tempoFinalRef.current) return;
+
+      const agora = Date.now();
+      const diferencaSegundos = Math.ceil(
+        (tempoFinalRef.current - agora) / 1000,
+      );
+
+      if (diferencaSegundos <= 0) {
+        tocarAlarme();
+        const proximo = (indiceCiclo + 1) % cycles.length;
+        mudarCiclo(proximo);
+      } else {
+        setTempoRestante(diferencaSegundos);
+      }
+    }, 200);
+
+    return () => clearInterval(intervalo);
+  }, [ativo, indiceCiclo, foco, descansoCurto, descansoLongo]);
+
+  const toggleTimer = () => {
+    if (!ativo) {
+      tempoFinalRef.current = Date.now() + tempoRestante * 1000;
+      setAtivo(true);
+    } else {
+      setAtivo(false);
+      tempoFinalRef.current = null;
+    }
   };
 
   return (
